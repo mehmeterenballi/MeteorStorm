@@ -85,7 +85,7 @@ class Bullet(pg.sprite.Sprite):
         self.layer = 3
 
         self.image = pg.image.load("laser.png")
-        self.image = pg.transform.scale(self.image, (5, 15))
+        self.image = pg.transform.scale(self.image, (10, 15))
         self.image.convert_alpha()
 
         self.rect = self.image.get_rect()
@@ -140,12 +140,11 @@ class Meteor(pg.sprite.Sprite):
 class RoundMeteor(pg.sprite.Sprite):
 
     def __init__(self, screen):
-        self.groups = round_meteor_group
+        self.groups = round_meteor_group, meteor_group
         pg.sprite.Sprite.__init__(self, self.groups)
         self.layer = 1
 
         randomScale = random.randint(15, 50)
-
 
         self.image = pg.image.load("round_meteor1.png")
         self.image = pg.transform.scale(self.image, (randomScale * 2, randomScale * 2))
@@ -197,7 +196,6 @@ class RoundMeteor(pg.sprite.Sprite):
             self.kill()
 
 
-
 bullet_frequency = 0.5
 bullet_time = 0
 
@@ -241,9 +239,7 @@ while mainloop:
             if event.key == pg.K_ESCAPE:
                 mainloop = False
 
-
     screen.blit(bg, (0, 0))
-
 
     all_groups.update(seconds)
     all_groups.draw(screen)
@@ -251,7 +247,6 @@ while mainloop:
     if Meteor.score >= 10:
         round_meteor_group.update(seconds)
         round_meteor_group.draw(screen)
-
 
     if ship.alive is False:
         text = write_text("You Died Score:" + str(Meteor.score * 10), 20)
@@ -262,7 +257,6 @@ while mainloop:
         text = write_text("Score:" + str(Meteor.score * 10), 20)
         rect = text.get_rect()
         screen.blit(text, (screen_width-rect.width, 10))
-
 
     pg.display.flip()
 
