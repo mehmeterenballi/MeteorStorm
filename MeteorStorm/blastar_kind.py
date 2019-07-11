@@ -238,18 +238,6 @@ while mainloop:
             if event.key == pg.K_ESCAPE:
                 mainloop = False
 
-    if ship.alive is False:
-        text = write_text("You Died Score:" + str(Meteor.score * 10), 20)
-        rect = text.get_rect()
-        screen.blit(text, (screen_width / 2 - rect.width / 2, screen_height / 2 - rect.height / 2))
-        ship.kill()
-    else:
-        screen.blit(bg, (0, 0))
-        screen.blit(bg, (0, 0))
-        
-        text = write_text("Score:" + str(Meteor.score * 10), 20)
-        rect = text.get_rect()
-        screen.blit(text, (screen_width-rect.width, 10))
 
     all_groups.clear(screen, bg)
     all_groups.update(seconds)
@@ -259,6 +247,19 @@ while mainloop:
         round_meteor_group.clear(screen, bg)
         round_meteor_group.update(seconds)
         round_meteor_group.draw(screen)
+
+
+    if ship.alive is False:
+        text = write_text("You Died Score:" + str(Meteor.score * 10), 20)
+        rect = text.get_rect()
+        screen.blit(text, (screen_width / 2 - rect.width / 2, screen_height / 2 - rect.height / 2))
+        ship.kill()
+    else:
+        screen.blit(bg, (0, 0))
+        text = write_text("Score:" + str(Meteor.score * 10), 20)
+        rect = text.get_rect()
+        screen.blit(text, (screen_width-rect.width, 10))
+
 
     pg.display.flip()
 
