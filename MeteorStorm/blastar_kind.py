@@ -245,12 +245,11 @@ while mainloop:
         ship.kill()
     else:
         screen.blit(bg, (0, 0))
-        if Meteor.score < 10:
-            screen.blit(write_text("Score:" + str(Meteor.score * 10), 20), (230, 10))
-        elif 10 <= Meteor.score < 100:
-            screen.blit(write_text("Score:" + str(Meteor.score * 10), 20), (220, 10))
-        else:
-            screen.blit(write_text("Score:" + str(Meteor.score * 10), 20), (210, 10))
+        screen.blit(bg, (0, 0))
+        
+        text = write_text("Score:" + str(Meteor.score * 10), 20)
+        rect = text.get_rect()
+        screen.blit(text, (screen_width-rect.width, 10))
 
     all_groups.clear(screen, bg)
     all_groups.update(seconds)
