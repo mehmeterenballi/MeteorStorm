@@ -130,7 +130,7 @@ class Meteor(pg.sprite.Sprite):
 
         collided_bullets = pg.sprite.spritecollide(self, bullet_group, True, pg.sprite.collide_mask)
         for c in collided_bullets:
-            Meteor.score += 1
+            Meteor.score += 10
             self.kill()
 
         if self.rect.right > screen_width + self.rect.width:
@@ -146,10 +146,12 @@ class RoundMeteor(pg.sprite.Sprite):
 
         randomScale = random.randint(15, 50)
 
-        self.image_orig = pg.image.load("round_meteor1.png")
-        self.image_orig = pg.transform.scale(self.image_orig, (randomScale * 2, randomScale * 2))
-        self.image_orig.convert_alpha()
-        self.image = self.image_orig.copy()
+
+        self.image = pg.image.load("round_meteor1.png")
+        self.image = pg.transform.scale(self.image, (randomScale * 2, randomScale * 2))
+        self.image.convert_alpha()
+
+        self.image_orig=self.image.copy()
 
         self.rect = self.image.get_rect()
 
@@ -168,13 +170,13 @@ class RoundMeteor(pg.sprite.Sprite):
         if now - self.last_update > 50:
             self.last_update = now
             self.spin = (self.spin + self.spin_speed) % 360
-            new_image = pg.transform.rotate(self.image_orig, self.spin)
+            self.image = pg.transform.rotate(self.image_orig, self.spin)
             old_center = self.rect.center
-            self.image = new_image
             self.rect = self.image.get_rect()
             self.rect.center = old_center
 
     def update(self, time):
+
         self.rotate()
 
         self.pos[0] += self.rot_speed * self.dx * time
@@ -193,6 +195,7 @@ class RoundMeteor(pg.sprite.Sprite):
 
         if self.rect.right > screen_width + self.rect.width:
             self.kill()
+
 
 
 bullet_frequency = 0.5
@@ -239,12 +242,13 @@ while mainloop:
                 mainloop = False
 
 
-    all_groups.clear(screen, bg)
+    screen.blit(bg, (0, 0))
+
+
     all_groups.update(seconds)
     all_groups.draw(screen)
 
     if Meteor.score >= 10:
-        round_meteor_group.clear(screen, bg)
         round_meteor_group.update(seconds)
         round_meteor_group.draw(screen)
 
@@ -255,7 +259,6 @@ while mainloop:
         screen.blit(text, (screen_width / 2 - rect.width / 2, screen_height / 2 - rect.height / 2))
         ship.kill()
     else:
-        screen.blit(bg, (0, 0))
         text = write_text("Score:" + str(Meteor.score * 10), 20)
         rect = text.get_rect()
         screen.blit(text, (screen_width-rect.width, 10))
