@@ -10,7 +10,7 @@ bulletSound = pg.mixer.Sound("lips.wav")
 
 screen_width, screen_height = 288, 512
 
-bg = pg.image.load("bg.jpg")
+bg = pg.image.load("space.gif")
 spaceship = pg.image.load("spaceship.png")
 meteor = pg.image.load("meteor.png")
 
@@ -182,6 +182,7 @@ class RoundMeteor(pg.sprite.Sprite):
         self.pos[1] += 200 * time
         self.rect.center = self.pos
 
+        # The if elif lines make round meteor bounce from edge of the screen if hits
         if self.rect.width / 2 >= self.rect.centerx:
             self.dx = self.dx * -1
         elif screen_width - self.rect.width / 2 <= self.rect.centerx:
@@ -206,6 +207,8 @@ round_meteor_frequency = 1 / ((Meteor.score // 10) + 1)
 round_meteor_time = 0
 
 ship = Ship(screen)
+
+oldLevel = 0
 
 screen.blit(bg, (0, 0))
 
