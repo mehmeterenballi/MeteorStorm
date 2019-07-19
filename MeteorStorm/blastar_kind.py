@@ -1,5 +1,6 @@
 import pygame as pg
 import random
+import scoring
 
 pg.init()
 pg.mixer.pre_init()
@@ -150,7 +151,7 @@ class RoundMeteor(pg.sprite.Sprite):
         self.image = pg.transform.scale(self.image, (randomScale * 2, randomScale * 2))
         self.image.convert_alpha()
 
-        self.image_orig=self.image.copy()
+        self.image_orig = self.image.copy()
 
         self.rect = self.image.get_rect()
 
@@ -190,7 +191,7 @@ class RoundMeteor(pg.sprite.Sprite):
 
         collided_bullets = pg.sprite.spritecollide(self, bullet_group, True, pg.sprite.collide_mask)
         for c in collided_bullets:
-            Meteor.score += 1
+            Meteor.score += 100
             self.kill()
 
         if self.rect.right > screen_width + self.rect.width:
@@ -244,6 +245,8 @@ while mainloop:
 
     screen.blit(bg, (0, 0))
 
+    scoring.score_blitting(screen, Meteor.score)
+
     all_groups.update(seconds)
     all_groups.draw(screen)
 
@@ -252,14 +255,14 @@ while mainloop:
         round_meteor_group.draw(screen)
 
     if ship.alive is False:
-        text = write_text("You Died Score:" + str(Meteor.score * 10), 20)
-        rect = text.get_rect()
-        screen.blit(text, (screen_width / 2 - rect.width / 2, screen_height / 2 - rect.height / 2))
+        # text = write_text("You Died Score:" + str(Meteor.score * 10), 20)
+        # rect = text.get_rect()
+        # screen.blit(text, (screen_width / 2 - rect.width / 2, screen_height / 2 - rect.height / 2))
         ship.kill()
-    else:
-        text = write_text("Score:" + str(Meteor.score * 10), 20)
-        rect = text.get_rect()
-        screen.blit(text, (screen_width-rect.width, 10))
+    # else:
+        # text = write_text("Score:" + str(Meteor.score * 10), 20)
+        # rect = text.get_rect()
+        # screen.blit(text, (screen_width-rect.width, 10))
 
     pg.display.flip()
 
