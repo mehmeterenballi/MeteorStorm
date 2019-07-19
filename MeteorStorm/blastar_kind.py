@@ -1,6 +1,8 @@
 import pygame as pg
 import random
+import time
 import scoring
+import gift
 
 pg.init()
 pg.mixer.pre_init()
@@ -15,7 +17,7 @@ bg = pg.image.load("space.gif")
 spaceship = pg.image.load("spaceship.png")
 meteor = pg.image.load("meteor.png")
 
-bg = pg.transform.scale(bg, (screen_width, screen_height,))
+bg = pg.transform.scale(bg, (screen_width, screen_height))
 spaceship = pg.transform.scale(spaceship, (40, 32))
 
 screen = pg.display.set_mode((screen_width, screen_height))
@@ -31,21 +33,22 @@ bullet_group = pg.sprite.Group()
 ship_group = pg.sprite.Group()
 round_meteor_group = pg.sprite.Group()
 meteor_group = pg.sprite.Group()
+gift_group = pg.sprite.Group()
 
 
-def write_text(msg, font_size):
-    font = pg.font.SysFont('none', font_size)
-    text = font.render(msg, True, (255, 255, 255))
-    text.convert()
-    return text
+# def write_text(msg, font_size):
+#     font = pg.font.SysFont('none', font_size)
+#     text = font.render(msg, True, (255, 255, 255))
+#     text.convert()
+#     return text
 
 
 class Ship(pg.sprite.Sprite):
     def __init__(self, screen, pos=[144, 492]):
         self.groups = ship_group, all_groups
+        self._layer = 4
 
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.layer = 3
         self.image = spaceship
         self.rect = self.image.get_rect()
         self.pos = pos
@@ -82,8 +85,9 @@ class Ship(pg.sprite.Sprite):
 class Bullet(pg.sprite.Sprite):
     def __init__(self, pos, screen):
         self.groups = all_groups, bullet_group
+        self._layer = 4
+
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.layer = 3
 
         self.image = pg.image.load("laser.png")
         self.image = pg.transform.scale(self.image, (10, 15))
@@ -109,8 +113,8 @@ class Meteor(pg.sprite.Sprite):
 
     def __init__(self, screen):
         self.groups = all_groups, meteor_group
+        self._layer = 2
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.layer = 2
 
         randomScale = random.randint(15, 50)
 
@@ -142,8 +146,8 @@ class RoundMeteor(pg.sprite.Sprite):
 
     def __init__(self, screen):
         self.groups = round_meteor_group, meteor_group
+        self._layer = 3
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.layer = 1
 
         randomScale = random.randint(15, 50)
 
@@ -207,6 +211,9 @@ meteor_time = 0
 round_meteor_frequency = 1 / ((Meteor.score // 10) + 1)
 round_meteor_time = 0
 
+red_gift_frequency = 20
+red_gift_time = 0
+
 ship = Ship(screen)
 
 oldLevel = 0
@@ -221,10 +228,28 @@ while mainloop:
     meteor_time += seconds
     round_meteor_time += seconds / 2
 
+    red_gift_time += seconds
+
     keys = pg.key.get_pressed()
 
     if keys[pg.K_SPACE] and bullet_time > bullet_frequency and ship.alive:
-        Bullet(ship.pos, screen)
+        if gift.Gun.gunLevel == 1:
+            Bullet(ship.pos, screen)
+        elif gift.Gun.gunLevel == 2:
+            Bullet([ship.pos[0] - 12, ship.pos[1]], screen)
+            Bullet([ship.pos[0] + 12, ship.pos[1]], screen)
+        elif gift.Gun.gunLevel == 3:
+            Bullet([ship.pos[0] - 12, ship.pos[1]], screen)
+            Bullet([ship.pos[0] + 12, ship.pos[1]], screen)
+            Bullet([ship.pos[0], ship.pos[1] - 7], screen)
+        elif gift.Gun.gunLevel == 4:
+            Bullet([ship.pos[0] - 12, ship.pos[1]], screen)
+            Bullet([ship.pos[0] + 12, ship.pos[1]], screen)
+            Bullet([ship.pos[0] - 22, ship.pos[1] + 15], screen)
+            Bullet([ship.pos[0] + 22, ship.pos[1] + 15], screen)
+            Bullet([ship.pos[0], ship.pos[1] - 7], screen)
+        else:
+            print("Gun level bigger than 4")
         bullet_time = 0
         bulletSound.play()
 
@@ -246,6 +271,10 @@ while mainloop:
     screen.blit(bg, (0, 0))
 
     scoring.score_blitting(screen, Meteor.score)
+
+    if red_gift_time > red_gift_frequency and gift.Gun.gunLevel <= 4:
+        gift.RedGift(ship.pos, [random.randint(16, 272), -16], all_groups, gift_group, ship_group)
+        red_gift_time = 0
 
     all_groups.update(seconds)
     all_groups.draw(screen)
