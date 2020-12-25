@@ -12,9 +12,9 @@ def score_blitting(win, score):
     elif 100 > score >= 10:
         units_digit = score % 10
         tens_digit = int((score - units_digit) / 10)
-        win.blit(score_image[tens_digit], (screen_width / 2 - 6, 0))
-        win.blit(score_image[units_digit], (screen_width / 2 + 6, 0))
-    elif 1000 < score and score >= 100:
+        win.blit(score_image[tens_digit], (screen_width / 2 - 10, 0))
+        win.blit(score_image[units_digit], (screen_width / 2 + 10, 0))
+    elif 1000 > score >= 100:
         units_digit = score % 10
         tens_digit = int(((score - units_digit) % 100) / 10)
         hundreds_digit = int((score - (score % 100)) / 100)

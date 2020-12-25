@@ -6,7 +6,7 @@ red_gift = pg.transform.scale(red_gift, (32, 32))
 
 class Gun:
     red = False
-    gunLevel = 1
+    gunLevel = 3
 
 
 class RedGift(pg.sprite.Sprite):

@@ -100,11 +100,11 @@ class Bullet(pg.sprite.Sprite):
         self.screen_rect = screen.get_rect()
 
     def update(self, time):
-        self.pos[1] -= 500 * time
+        self.pos[1] -= 100 * time
 
         self.rect.center = self.pos
 
-        if not self.screen_rect.contains(self.rect):
+        if self.rect.bottom < 0:
             self.kill()
 
 
@@ -211,14 +211,14 @@ meteor_time = 0
 round_meteor_frequency = 1 / ((Meteor.score // 10) + 1)
 round_meteor_time = 0
 
-red_gift_frequency = 20
+red_gift_frequency = 5
 red_gift_time = 0
 
 ship = Ship(screen)
 
 oldLevel = 0
 
-screen.blit(bg, (0, 0))
+backgroundy = 0
 
 while mainloop:
     time = clock.tick()  # milliseconds
@@ -245,8 +245,8 @@ while mainloop:
         elif gift.Gun.gunLevel == 4:
             Bullet([ship.pos[0] - 12, ship.pos[1]], screen)
             Bullet([ship.pos[0] + 12, ship.pos[1]], screen)
-            Bullet([ship.pos[0] - 22, ship.pos[1] + 15], screen)
-            Bullet([ship.pos[0] + 22, ship.pos[1] + 15], screen)
+            Bullet([ship.pos[0] - 20, ship.pos[1] + 15], screen)
+            Bullet([ship.pos[0] + 20, ship.pos[1] + 15], screen)
             Bullet([ship.pos[0], ship.pos[1] - 7], screen)
         else:
             print("Gun level bigger than 4")
@@ -268,11 +268,16 @@ while mainloop:
             if event.key == pg.K_ESCAPE:
                 mainloop = False
 
+    backgroundy += time * 100
+    screen.blit(bg, (0, backgroundy))
+    if backgroundy > screen_height:
+        backgroundy = 0
+
     screen.blit(bg, (0, 0))
 
     scoring.score_blitting(screen, Meteor.score)
 
-    if red_gift_time > red_gift_frequency and gift.Gun.gunLevel <= 4:
+    if red_gift_time > red_gift_frequency and gift.Gun.gunLevel <= 3:
         gift.RedGift(ship.pos, [random.randint(16, 272), -16], all_groups, gift_group, ship_group)
         red_gift_time = 0
 
